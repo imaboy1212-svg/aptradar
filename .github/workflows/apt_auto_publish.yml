@@ -1,0 +1,52 @@
+name: APT Auto Publisher (apt.bestwellth.org)
+on:
+  workflow_dispatch:
+    inputs:
+      rewrite_schedule:
+        description: '청약일정 글 재발행 (1 입력 시 활성화)'
+        required: false
+        default: ''
+      rewrite_slug:
+        description: '재발행할 기존 포스트 슬러그 (비우면 새 글 생성)'
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 4 * * *'  # 매일 오후 1시 KST (UTC 04:00)
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Python 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: 패키지 설치
+        run: pip install -r requirements.txt
+      - name: 청약 자동 발행 실행
+        env:
+          ANTHROPIC_API_KEY:    ${{ secrets.ANTHROPIC_API_KEY }}
+          APT_WP_SITE_URL:      ${{ secrets.APT_WP_SITE_URL }}
+          APT_WP_USERNAME:      ${{ secrets.APT_WP_USERNAME }}
+          APT_WP_APP_PASSWORD:  ${{ secrets.APT_WP_APP_PASSWORD }}
+          PUBLIC_DATA_API_KEY_APT:    ${{ secrets.PUBLIC_DATA_API_KEY_APT }}
+          PUBLIC_DATA_API_KEY_SCORE:  ${{ secrets.PUBLIC_DATA_API_KEY_SCORE }}
+          TELEGRAM_BOT_TOKEN:   ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:     ${{ secrets.TELEGRAM_CHAT_ID }}
+          REWRITE_SCHEDULE:     ${{ github.event.inputs.rewrite_schedule }}
+          REWRITE_SLUG:         ${{ github.event.inputs.rewrite_slug }}
+        run: python apt_auto_publisher.py
+      - name: 발행 이력 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add published_history.json
+          git diff --staged --quiet || git commit -m "chore: update published_history [skip ci]"
+          git pull --rebase origin main
+          git push origin main
