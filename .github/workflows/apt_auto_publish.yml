@@ -10,8 +10,6 @@ on:
         description: '재발행할 기존 포스트 슬러그 (비우면 새 글 생성)'
         required: false
         default: ''
-  schedule:
-    - cron: '0 4 * * *'  # 매일 오후 1시 KST (UTC 04:00)
 permissions:
   contents: write
 jobs:
