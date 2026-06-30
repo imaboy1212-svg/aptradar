@@ -7,15 +7,19 @@ import anthropic
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
-# .env 파일이 있으면 로드 (PythonAnywhere 등 로컬 환경용)
-_env_path = os.path.join(os.path.dirname(__file__), ".env")
-if os.path.exists(_env_path):
-    with open(_env_path, encoding="utf-8") as _f:
-        for _line in _f:
-            _line = _line.strip()
-            if _line and not _line.startswith("#") and "=" in _line:
-                _k, _v = _line.split("=", 1)
-                os.environ.setdefault(_k.strip(), _v.strip())
+# .env 파일 로드: 프로젝트 폴더 우선, 없으면 홈 디렉토리 폴백
+for _env_path in [
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"),
+    os.path.expanduser("~/.env"),
+]:
+    if os.path.exists(_env_path):
+        with open(_env_path, encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    os.environ.setdefault(_k.strip(), _v.strip())
+        break
 
 # ==========================================
 # 1. 필수 설정 (GitHub Secrets 또는 .env)
