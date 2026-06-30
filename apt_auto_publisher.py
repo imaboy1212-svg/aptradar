@@ -7,8 +7,18 @@ import anthropic
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
+# .env 파일이 있으면 로드 (PythonAnywhere 등 로컬 환경용)
+_env_path = os.path.join(os.path.dirname(__file__), ".env")
+if os.path.exists(_env_path):
+    with open(_env_path, encoding="utf-8") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip())
+
 # ==========================================
-# 1. 필수 설정 (GitHub Secrets)
+# 1. 필수 설정 (GitHub Secrets 또는 .env)
 # ==========================================
 ANTHROPIC_API_KEY   = os.environ.get("ANTHROPIC_API_KEY")
 APT_WP_SITE_URL     = os.environ.get("APT_WP_SITE_URL", "https://apt.bestwellth.org")
