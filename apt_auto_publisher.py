@@ -1582,6 +1582,14 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
     return f"""
 [HTML 구조 — 반드시 이 순서, 이 스타일 그대로. 절대 생략 금지]
 
+[모바일 필수 규칙]
+- 본문 최소 font-size:15px, 표 내부 최소 font-size:13px, 캡션·출처만 font-size:12px 허용
+- 모든 표는 반드시 overflow-x:auto + word-break:keep-all 적용 (한글 단어 중간 줄바꿈 방지)
+- 표 컬럼 최대 3개 — 4개 이상 필요 시 카드형으로 전환
+- 소득기준·자산기준 등 긴 자격조건 상세 표는 <details><summary>로 접기 처리
+  예: <details><summary style="cursor:pointer;font-size:14px;font-weight:700;color:{CAT_COLOR};padding:8px 0;">신혼희망타운 소득기준 상세보기 ▼</summary>[상세 내용]</details>
+  단, 청약일정·분양가 핵심·3줄 요약·청약홈 CTA는 접기 적용 금지
+
 --- 1. 카테고리 뱃지 ---
 <div style="display:inline-block;background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:14px;">[카테고리명] · [서브라벨]</div>
 
@@ -1598,9 +1606,9 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
   </ul>
   <hr style="border:none;border-top:1px solid #e2e8f0;margin:0 0 20px 0;">
   <div style="display:flex;flex-wrap:wrap;gap:8px;">
-    <span style="background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">#[키워드1]</span>
-    <span style="background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">#[키워드2]</span>
-    <span style="background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;">#[키워드3]</span>
+    <span style="background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;">#[키워드1]</span>
+    <span style="background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;">#[키워드2]</span>
+    <span style="background:{CAT_LIGHT_BG};color:{CAT_COLOR};font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;">#[키워드3]</span>
   </div>
 </div>
 
@@ -1608,16 +1616,26 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
 <div style="background:#064e3b;border-radius:16px;padding:28px 30px;margin-bottom:32px;">
   <p style="margin:0 0 16px 0;font-size:15px;font-weight:700;color:#ffffff !important;letter-spacing:0.08em;">핵심 3가지</p>
   <ul style="list-style:none;padding:0;margin:0;">
-    <li style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><span style="display:inline-block;background:#10b981;color:#fff;font-size:12px;font-weight:800;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;">01</span><span style="font-size:15px;color:#ffffff;line-height:1.7;">[핵심 포인트 1]</span></li>
-    <li style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><span style="display:inline-block;background:#10b981;color:#fff;font-size:12px;font-weight:800;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;">02</span><span style="font-size:15px;color:#ffffff;line-height:1.7;">[핵심 포인트 2]</span></li>
-    <li style="display:flex;align-items:flex-start;gap:12px;"><span style="display:inline-block;background:#10b981;color:#fff;font-size:12px;font-weight:800;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;">03</span><span style="font-size:15px;color:#ffffff;line-height:1.7;">[핵심 포인트 3]</span></li>
+    <li style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><span style="display:inline-block;background:#10b981;color:#fff;font-size:13px;font-weight:800;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;">01</span><span style="font-size:15px;color:#ffffff;line-height:1.7;">[핵심 포인트 1]</span></li>
+    <li style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><span style="display:inline-block;background:#10b981;color:#fff;font-size:13px;font-weight:800;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;">02</span><span style="font-size:15px;color:#ffffff;line-height:1.7;">[핵심 포인트 2]</span></li>
+    <li style="display:flex;align-items:flex-start;gap:12px;"><span style="display:inline-block;background:#10b981;color:#fff;font-size:13px;font-weight:800;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;">03</span><span style="font-size:15px;color:#ffffff;line-height:1.7;">[핵심 포인트 3]</span></li>
   </ul>
 </div>
 
 --- 5. 상단 CTA (이 HTML을 그대로 복사, URL·텍스트 절대 수정 금지) ---
 <div style="text-align:center;margin:36px 0;"><div style="display:inline-block;background:#10b981;border-radius:8px;box-shadow:0 4px 12px rgba(16,185,129,0.25);padding:14px 32px;line-height:1;"><a href="{top_url}" target="_blank" rel="noopener noreferrer" style="color:#fff;font-size:15px;font-weight:700;text-decoration:none;line-height:1;display:inline;vertical-align:middle;">{top_btn}</a></div></div>
 
---- 5-1. 광고 슬롯 A (상단 CTA 아래, 본문 시작 전 — 이 HTML을 그대로 복사, 절대 수정 금지) ---
+--- 5-1. 3줄 핵심 요약 카드 (첫 H2 이전 배치 — 3개 모두 완성) ---
+<div style="margin:32px 0;padding:28px 24px;background:{CAT_LIGHT_BG};border:1px solid {CAT_LIGHT_BORDER};border-radius:20px;">
+  <p style="margin:0 0 18px 0;font-size:14px;font-weight:800;color:{CAT_DARK};letter-spacing:0.05em;">📋 3줄 핵심 요약</p>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid {CAT_LIGHT_BORDER};padding:18px;border-radius:14px;text-align:center;"><p style="margin:0 0 8px 0;font-weight:800;color:{CAT_COLOR};font-size:15px;">[카드1 제목]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">[카드1 내용]</p></div>
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid {CAT_LIGHT_BORDER};padding:18px;border-radius:14px;text-align:center;"><p style="margin:0 0 8px 0;font-weight:800;color:{CAT_COLOR};font-size:15px;">[카드2 제목]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">[카드2 내용]</p></div>
+    <div style="flex:1;min-width:180px;background:#fff;border:1px solid {CAT_LIGHT_BORDER};padding:18px;border-radius:14px;text-align:center;"><p style="margin:0 0 8px 0;font-weight:800;color:{CAT_COLOR};font-size:15px;">[카드3 제목]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">[카드3 내용]</p></div>
+  </div>
+</div>
+
+--- 5-2. 광고 슬롯 A (3줄 요약 아래, 본문 시작 전 — 이 HTML을 그대로 복사, 절대 수정 금지) ---
 <div style="margin:32px 0;">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6858780475640766" crossorigin="anonymous"></script>
 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6858780475640766" data-ad-slot="1825484842" data-ad-format="auto" data-full-width-responsive="true"></ins>
@@ -1632,6 +1650,11 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
   <p style="font-size:15px;color:#94a3b8;font-weight:600;margin:0 0 20px 0;">[서브 문구]</p>
   <p style="font-size:15px;color:#334155;line-height:1.9;margin-bottom:16px;">[핵심 내용 1~2줄 서술 — 이 섹션에서 말하려는 핵심 한 문장]</p>
   [아래 콘텐츠 컴포넌트 중 내용 성격에 맞게 선택하여 삽입]
+  [두 번째 H2 아래에는 반드시 이미지 블록 1개 추가:
+  <figure style="margin:20px 0;text-align:center;">
+    <img src="[이미지URL 또는 https://via.placeholder.com/800x400/ecfdf5/10b981?text=[단지명+인포그래픽]]" alt="[단지명] 관련 정보 인포그래픽" style="max-width:100%;border-radius:12px;" loading="lazy">
+    <figcaption style="font-size:12px;color:#94a3b8;margin-top:8px;">[이미지 캡션]</figcaption>
+  </figure>]
 </div>
 
 [콘텐츠 컴포넌트 선택 기준 — 내용 성격에 따라 Claude가 판단]
@@ -1639,15 +1662,15 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
 ▶ 항목 나열·조건·체크리스트 → 글머리기호 박스
 <div style="background:#f8fafc;border-radius:12px;padding:20px 24px;margin:16px 0;">
   <ul style="list-style:none;padding:0;margin:0;">
-    <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#334155;line-height:1.8;margin-bottom:8px;"><span style="color:{CAT_COLOR};font-weight:800;flex-shrink:0;">✓</span><span>[항목 내용]</span></li>
-    <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#334155;line-height:1.8;margin-bottom:8px;"><span style="color:{CAT_COLOR};font-weight:800;flex-shrink:0;">✓</span><span>[항목 내용]</span></li>
-    <li style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#334155;line-height:1.8;"><span style="color:{CAT_COLOR};font-weight:800;flex-shrink:0;">✓</span><span>[항목 내용]</span></li>
+    <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;color:#334155;line-height:1.8;margin-bottom:8px;"><span style="color:{CAT_COLOR};font-weight:800;flex-shrink:0;">✓</span><span>[항목 내용]</span></li>
+    <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;color:#334155;line-height:1.8;margin-bottom:8px;"><span style="color:{CAT_COLOR};font-weight:800;flex-shrink:0;">✓</span><span>[항목 내용]</span></li>
+    <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;color:#334155;line-height:1.8;"><span style="color:{CAT_COLOR};font-weight:800;flex-shrink:0;">✓</span><span>[항목 내용]</span></li>
   </ul>
 </div>
 
-▶ 비교·조건 대조 → 2열 비교 표
-<div style="overflow-x:auto;margin:16px 0;">
-  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+▶ 비교·조건 대조 → 최대 3컬럼 비교 표 (4컬럼 이상 금지 — 초과 시 카드형 전환)
+<div style="overflow-x:auto;margin:16px 0;word-break:keep-all;">
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
     <thead><tr style="background:{CAT_COLOR};color:#fff;">
       <th style="padding:11px 14px;text-align:center;font-weight:700;">[구분]</th>
       <th style="padding:11px 14px;text-align:center;font-weight:700;">[항목A]</th>
@@ -1660,19 +1683,27 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
   </table>
 </div>
 
+▶ 4개 이상 항목 비교 → 카드형 전환
+<div style="display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;">
+  <div style="flex:1;min-width:140px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px;">
+    <p style="margin:0 0 6px 0;font-size:13px;font-weight:800;color:{CAT_COLOR};">[타입명]</p>
+    <p style="margin:0;font-size:13px;color:#334155;line-height:1.7;">[분양가·세대수 등 세로 나열]</p>
+  </div>
+</div>
+
 ▶ 절차·순서·타임라인 → 스텝 박스
 <div style="margin:16px 0;">
   <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;">
-    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;"><span style="background:{CAT_COLOR};color:#fff;font-size:12px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">1</span><div style="width:2px;height:24px;background:{CAT_LIGHT_BORDER};margin-top:4px;"></div></div>
-    <div style="padding-top:4px;"><p style="margin:0 0 4px 0;font-size:14px;font-weight:700;color:#1e293b;">[단계명]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.7;">[단계 설명 1~2줄]</p></div>
+    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;"><span style="background:{CAT_COLOR};color:#fff;font-size:13px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">1</span><div style="width:2px;height:24px;background:{CAT_LIGHT_BORDER};margin-top:4px;"></div></div>
+    <div style="padding-top:4px;"><p style="margin:0 0 4px 0;font-size:15px;font-weight:700;color:#1e293b;">[단계명]</p><p style="margin:0;font-size:15px;color:#334155;line-height:1.7;">[단계 설명 1~2줄]</p></div>
   </div>
   <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;">
-    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;"><span style="background:{CAT_COLOR};color:#fff;font-size:12px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">2</span><div style="width:2px;height:24px;background:{CAT_LIGHT_BORDER};margin-top:4px;"></div></div>
-    <div style="padding-top:4px;"><p style="margin:0 0 4px 0;font-size:14px;font-weight:700;color:#1e293b;">[단계명]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.7;">[단계 설명 1~2줄]</p></div>
+    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0;"><span style="background:{CAT_COLOR};color:#fff;font-size:13px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">2</span><div style="width:2px;height:24px;background:{CAT_LIGHT_BORDER};margin-top:4px;"></div></div>
+    <div style="padding-top:4px;"><p style="margin:0 0 4px 0;font-size:15px;font-weight:700;color:#1e293b;">[단계명]</p><p style="margin:0;font-size:15px;color:#334155;line-height:1.7;">[단계 설명 1~2줄]</p></div>
   </div>
   <div style="display:flex;align-items:flex-start;gap:14px;">
-    <div style="flex-shrink:0;"><span style="background:{CAT_COLOR};color:#fff;font-size:12px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">3</span></div>
-    <div style="padding-top:4px;"><p style="margin:0 0 4px 0;font-size:14px;font-weight:700;color:#1e293b;">[단계명]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.7;">[단계 설명 1~2줄]</p></div>
+    <div style="flex-shrink:0;"><span style="background:{CAT_COLOR};color:#fff;font-size:13px;font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">3</span></div>
+    <div style="padding-top:4px;"><p style="margin:0 0 4px 0;font-size:15px;font-weight:700;color:#1e293b;">[단계명]</p><p style="margin:0;font-size:15px;color:#334155;line-height:1.7;">[단계 설명 1~2줄]</p></div>
   </div>
 </div>
 
@@ -1680,9 +1711,9 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
 <div style="background:#fef9c3;border-left:4px solid #eab308;border-radius:0 12px 12px 0;padding:16px 20px;margin:16px 0;">
   <p style="margin:0 0 8px 0;font-size:13px;font-weight:800;color:#854d0e;">⚠ 주의사항</p>
   <ul style="list-style:none;padding:0;margin:0;">
-    <li style="font-size:14px;color:#334155;line-height:1.8;margin-bottom:6px;">· [주의 항목 1]</li>
-    <li style="font-size:14px;color:#334155;line-height:1.8;margin-bottom:6px;">· [주의 항목 2]</li>
-    <li style="font-size:14px;color:#334155;line-height:1.8;">· [주의 항목 3]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;margin-bottom:6px;">· [주의 항목 1]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;margin-bottom:6px;">· [주의 항목 2]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;">· [주의 항목 3]</li>
   </ul>
 </div>
 
@@ -1691,32 +1722,29 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
 <div style="background:{CAT_LIGHT_BG};border:1px solid {CAT_LIGHT_BORDER};border-radius:12px;padding:16px 20px;margin:16px 0;">
   <p style="margin:0 0 8px 0;font-size:13px;font-weight:800;color:{CAT_DARK};">📌 핵심 포인트</p>
   <ul style="list-style:none;padding:0;margin:0;">
-    <li style="font-size:14px;color:#334155;line-height:1.8;margin-bottom:6px;">· <strong>[키]</strong> [값]</li>
-    <li style="font-size:14px;color:#334155;line-height:1.8;margin-bottom:6px;">· <strong>[키]</strong> [값]</li>
-    <li style="font-size:14px;color:#334155;line-height:1.8;">· <strong>[키]</strong> [값]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;margin-bottom:6px;">· <strong>[키]</strong> [값]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;margin-bottom:6px;">· <strong>[키]</strong> [값]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;">· <strong>[키]</strong> [값]</li>
   </ul>
 </div>
 
 강조 문장 (본문 내 인라인):
 <span style="background-color:{CAT_LIGHT_BG};padding:2px 6px;color:{CAT_COLOR};font-weight:700;">[강조 문장]</span>
 
---- 7. 청약 일정 표 (분양정보 전용) ---
-<div style="overflow-x:auto;margin:24px 0;"><table style="width:100%;border-collapse:collapse;font-size:14px;"><thead><tr style="background:{CAT_COLOR};color:#fff;"><th style="padding:12px;text-align:center;font-weight:700;">구분</th><th style="padding:12px;text-align:center;font-weight:700;">일정</th><th style="padding:12px;text-align:center;font-weight:700;">비고</th></tr></thead><tbody><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px;text-align:center;color:#334155;">모집공고일</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[날짜]</td><td style="padding:12px;text-align:center;color:#64748b;"></td></tr><tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc;"><td style="padding:12px;text-align:center;color:#334155;">청약 접수</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[시작일] ~ [종료일]</td><td style="padding:12px;text-align:center;color:#64748b;">청약홈</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px;text-align:center;color:#334155;">당첨자 발표</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[날짜]</td><td style="padding:12px;text-align:center;color:#64748b;"></td></tr><tr style="background:#f8fafc;"><td style="padding:12px;text-align:center;color:#334155;">계약 체결</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[날짜]</td><td style="padding:12px;text-align:center;color:#64748b;"></td></tr></tbody></table></div>
+--- 7. 청약 일정 표 (분양정보 전용, 3컬럼 유지) ---
+<div style="overflow-x:auto;margin:24px 0;word-break:keep-all;"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr style="background:{CAT_COLOR};color:#fff;"><th style="padding:12px;text-align:center;font-weight:700;">구분</th><th style="padding:12px;text-align:center;font-weight:700;">일정</th><th style="padding:12px;text-align:center;font-weight:700;">비고</th></tr></thead><tbody><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px;text-align:center;color:#334155;">모집공고일</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[날짜]</td><td style="padding:12px;text-align:center;color:#64748b;"></td></tr><tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc;"><td style="padding:12px;text-align:center;color:#334155;">청약 접수</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[시작일] ~ [종료일]</td><td style="padding:12px;text-align:center;color:#64748b;">청약홈</td></tr><tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:12px;text-align:center;color:#334155;">당첨자 발표</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[날짜]</td><td style="padding:12px;text-align:center;color:#64748b;"></td></tr><tr style="background:#f8fafc;"><td style="padding:12px;text-align:center;color:#334155;">계약 체결</td><td style="padding:12px;text-align:center;color:#334155;font-weight:700;">[날짜]</td><td style="padding:12px;text-align:center;color:#64748b;"></td></tr></tbody></table></div>
 
 --- 8. 하단 CTA (이 HTML을 그대로 복사, URL·텍스트 절대 수정 금지) ---
 <div style="text-align:center;margin:36px 0;"><div style="display:inline-block;background:#059669;border-radius:8px;box-shadow:0 4px 12px rgba(16,185,129,0.25);padding:14px 32px;line-height:1;"><a href="{bottom_url}" target="_blank" rel="noopener noreferrer" style="color:#fff;font-size:15px;font-weight:700;text-decoration:none;line-height:1;display:inline;vertical-align:middle;">{bottom_btn}</a></div></div>
 
---- 9. 3카드 요약 (3개 모두 완성) ---
-<div style="margin-top:60px;padding-top:40px;border-top:2px dashed #cbd5e1;"><h3 style="text-align:center;color:#1e293b;margin-bottom:24px;font-size:20px;font-weight:800;">3줄 핵심 요약</h3><div style="display:flex;flex-wrap:wrap;gap:14px;padding-bottom:12px;"><div style="flex:1;min-width:200px;background:{CAT_LIGHT_BG};border:1px solid {CAT_LIGHT_BORDER};padding:20px;border-radius:18px;text-align:center;"><p style="margin:0;font-weight:800;color:{CAT_COLOR};font-size:15px;margin-bottom:8px;">[카드1 제목]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">[카드1 내용]</p></div><div style="flex:1;min-width:200px;background:{CAT_LIGHT_BG};border:1px solid {CAT_LIGHT_BORDER};padding:20px;border-radius:18px;text-align:center;"><p style="margin:0;font-weight:800;color:{CAT_COLOR};font-size:15px;margin-bottom:8px;">[카드2 제목]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">[카드2 내용]</p></div><div style="flex:1;min-width:200px;background:{CAT_LIGHT_BG};border:1px solid {CAT_LIGHT_BORDER};padding:20px;border-radius:18px;text-align:center;"><p style="margin:0;font-weight:800;color:{CAT_COLOR};font-size:15px;margin-bottom:8px;">[카드3 제목]</p><p style="margin:0;font-size:14px;color:#334155;line-height:1.6;">[카드3 내용]</p></div></div></div>
-
---- 10. 참고자료 (이 HTML을 그대로 복사, URL·출처명 절대 수정 금지) ---
+--- 9. 참고자료 (이 HTML을 그대로 복사, URL·출처명 절대 수정 금지) ---
 <div style="margin-top:48px;padding:24px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;"><h4 style="margin:0 0 14px 0;color:#334155;font-size:16px;font-weight:700;">참고 자료</h4><ul style="list-style:none;padding:0;margin:0;font-size:14px;color:#334155;line-height:2.2;"><li><a href="{ref_url}" target="_blank" rel="noopener" style="color:{CAT_COLOR};text-decoration:none;">{ref_name}</a></li></ul></div>
 
---- 11. 광고 슬롯 C (면책조항 바로 위 — 이 HTML을 그대로 복사, 절대 수정 금지) ---
+--- 10. 광고 슬롯 C (면책조항 바로 위 — 이 HTML을 그대로 복사, 절대 수정 금지) ---
 <div style="margin:32px 0;"><ins class="adsbygoogle" style="display:block" data-ad-format="autorelaxed" data-ad-client="ca-pub-6858780475640766" data-ad-slot="3873632172"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script></div>
 
---- 12. 면책조항 (맨 끝 필수) ---
-<p style="margin-top:2em;font-size:13px;color:#94a3b8;">본 콘텐츠는 정보 제공 목적으로 작성되었습니다. 청약 신청 전 청약홈 공식 공고문을 반드시 확인하시기 바랍니다.</p>
+--- 11. 면책조항 (맨 끝 필수) ---
+<p style="margin-top:2em;font-size:12px;color:#94a3b8;">본 콘텐츠는 정보 제공 목적으로 작성되었습니다. 청약 신청 전 청약홈 공식 공고문을 반드시 확인하시기 바랍니다.</p>
 """
 
 # ==========================================
