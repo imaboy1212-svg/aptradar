@@ -639,7 +639,7 @@ def generate_weekly_schedule_article():
 
 [SEO — 반드시 출력]
 [FOCUS_KW]3~4단어 롱테일 키워드[/FOCUS_KW]
-[META_DESC]140~160자 메타 설명[/META_DESC]
+[META_DESC]130~155자 자연스러운 문장형 메타 설명 — 해시태그·버튼텍스트·UI문구 절대 금지, 검색결과에 그대로 노출되는 설명문[/META_DESC]
 [SLUG]영문 슬러그[/SLUG]
 [EXCERPT]100~150자 발췌문[/EXCERPT]
 
@@ -1067,10 +1067,16 @@ def fetch_apt_announcements():
     """
     INVALID_NAMES = {"APT 잔여세대", "잔여세대", "APT", "아파트", ""}
 
+    METRO_REGIONS = {"서울", "경기", "인천"}
+    def _metro_first(a):
+        is_metro = any(r in (a.get("region") or "") for r in METRO_REGIONS)
+        return (0 if is_metro else 1)
+
     # ── 1순위: 청약홈 분양정보 목록 (현재 분양 중인 단지 전체) ──
     listings = fetch_applyhome_pblanc_list()
     if listings:
-        print(f"청약홈 분양정보 {len(listings)}건 사용")
+        listings = sorted(listings, key=_metro_first)
+        print(f"청약홈 분양정보 {len(listings)}건 사용 (수도권 우선)")
         return listings
     print("청약홈 분양정보 목록 실패 → 다음 소스로")
 
@@ -1148,9 +1154,11 @@ def fetch_apt_announcements():
     except Exception as e:
         print(f"odcloud 청약홈 API 호출 실패: {e}")
 
+    METRO_REGIONS = {"서울", "경기", "인천"}
     def sort_key(a):
-        return a.get("rcrit_pblanc_de", "") or ""
-    combined = sorted(remndr, key=sort_key, reverse=True) + sorted(announcements, key=sort_key, reverse=True)
+        is_metro = any(r in (a.get("region") or "") for r in METRO_REGIONS)
+        return (0 if is_metro else 1, -(len(a.get("rcrit_pblanc_de", "") or "")))
+    combined = sorted(remndr + announcements, key=sort_key)
     if combined:
         print(f"전체 공고 {len(combined)}건")
         return combined
@@ -1969,7 +1977,7 @@ def generate_apt_fallback_article():
 
 [SEO — 반드시 출력]
 [FOCUS_KW]3~4단어 롱테일 키워드[/FOCUS_KW]
-[META_DESC]130~155자 메타 설명[/META_DESC]
+[META_DESC]130~155자 자연스러운 문장형 메타 설명 — 해시태그·버튼텍스트·UI문구 절대 금지, 검색결과에 그대로 노출되는 설명문[/META_DESC]
 [SLUG]반드시 영문 소문자+하이픈만 사용. 한글 절대 금지.[/SLUG]
 [EXCERPT]100~150자 발췌문[/EXCERPT]
 
@@ -2013,7 +2021,7 @@ def generate_news_fallback_article():
 
 [SEO — 반드시 출력]
 [FOCUS_KW]3~4단어 롱테일 키워드[/FOCUS_KW]
-[META_DESC]130~155자 메타 설명[/META_DESC]
+[META_DESC]130~155자 자연스러운 문장형 메타 설명 — 해시태그·버튼텍스트·UI문구 절대 금지, 검색결과에 그대로 노출되는 설명문[/META_DESC]
 [SLUG]반드시 영문 소문자+하이픈만 사용. 한글 절대 금지.[/SLUG]
 [EXCERPT]100~150자 발췌문[/EXCERPT]
 
@@ -2138,7 +2146,7 @@ def generate_apt_article(announcement):
 
 [SEO — 반드시 출력]
 [FOCUS_KW]3~4단어 롱테일 키워드[/FOCUS_KW]
-[META_DESC]130~155자 메타 설명[/META_DESC]
+[META_DESC]130~155자 자연스러운 문장형 메타 설명 — 해시태그·버튼텍스트·UI문구 절대 금지, 검색결과에 그대로 노출되는 설명문[/META_DESC]
 [SLUG]반드시 영문 소문자+하이픈만 사용. 한글 절대 금지. 예: apartment-subscription-guide-2026[/SLUG]
 [EXCERPT]100~150자 발췌문[/EXCERPT]
 
@@ -2190,7 +2198,7 @@ def generate_news_article(articles):
 
 [SEO — 반드시 출력]
 [FOCUS_KW]3~4단어 롱테일 키워드[/FOCUS_KW]
-[META_DESC]130~155자 메타 설명[/META_DESC]
+[META_DESC]130~155자 자연스러운 문장형 메타 설명 — 해시태그·버튼텍스트·UI문구 절대 금지, 검색결과에 그대로 노출되는 설명문[/META_DESC]
 [SLUG]반드시 영문 소문자+하이픈만 사용. 한글 절대 금지. 예: apartment-subscription-guide-2026[/SLUG]
 [EXCERPT]100~150자 발췌문[/EXCERPT]
 
@@ -2244,7 +2252,7 @@ def generate_guide_article(topic, source_type, source_data=""):
 
 [SEO — 반드시 출력]
 [FOCUS_KW]3~4단어 롱테일 키워드[/FOCUS_KW]
-[META_DESC]130~155자 메타 설명[/META_DESC]
+[META_DESC]130~155자 자연스러운 문장형 메타 설명 — 해시태그·버튼텍스트·UI문구 절대 금지, 검색결과에 그대로 노출되는 설명문[/META_DESC]
 [SLUG]반드시 영문 소문자+하이픈만 사용. 한글 절대 금지. 예: apartment-subscription-guide-2026[/SLUG]
 [EXCERPT]100~150자 발췌문[/EXCERPT]
 
@@ -2311,6 +2319,8 @@ def parse_and_publish(raw, category_id, label):
     # > 없는 잘못된 닫는 태그 수정: </P 다음에 비알파숫자 문자가 오는 경우
     body = re.sub(r'</(P|H[1-6]|DIV|SPAN|TABLE|TR|TD|TH|UL|OL|LI|A|STRONG|EM|B|I)(?=[^a-zA-Z0-9>])',
                   lambda m: f'</{m.group(1).lower()}>', body)
+    # 빈 <li> 항목 제거 (공백·&nbsp; 만 있는 경우)
+    body = re.sub(r'<li[^>]*>\s*(&nbsp;)?\s*</li>', '', body)
 
     print(f"제목: {title}")
     print(f"포커스 키워드: {focus_kw}")
