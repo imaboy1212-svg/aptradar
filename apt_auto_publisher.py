@@ -1696,11 +1696,6 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
   <p style="font-size:15px;color:#94a3b8;font-weight:600;margin:0 0 20px 0;">[서브 문구]</p>
   <p style="font-size:15px;color:#334155;line-height:1.9;margin-bottom:16px;">[핵심 내용 1~2줄 서술 — 이 섹션에서 말하려는 핵심 한 문장]</p>
   [아래 콘텐츠 컴포넌트 중 내용 성격에 맞게 선택하여 삽입]
-  [두 번째 H2 아래에는 반드시 이미지 블록 1개 추가:
-  <figure style="margin:20px 0;text-align:center;">
-    <img src="[이미지URL 또는 https://via.placeholder.com/800x400/ecfdf5/10b981?text=[단지명+인포그래픽]]" alt="[단지명] 관련 정보 인포그래픽" style="max-width:100%;border-radius:12px;" loading="lazy">
-    <figcaption style="font-size:12px;color:#94a3b8;margin-top:8px;">[이미지 캡션]</figcaption>
-  </figure>]
 </div>
 
 [콘텐츠 컴포넌트 선택 기준 — 내용 성격에 따라 Claude가 판단]
@@ -1783,6 +1778,9 @@ def build_apt_html_guide(top_url: str, top_btn: str, bottom_url: str, bottom_btn
 --- 8. 하단 CTA (이 HTML을 그대로 복사, URL·텍스트 절대 수정 금지) ---
 <div style="text-align:center;margin:36px 0;"><div style="display:inline-block;background:#059669;border-radius:8px;box-shadow:0 4px 12px rgba(16,185,129,0.25);padding:14px 32px;line-height:1;"><a href="{bottom_url}" target="_blank" rel="noopener noreferrer" style="color:#fff;font-size:15px;font-weight:700;text-decoration:none;line-height:1;display:inline;vertical-align:middle;">{bottom_btn}</a></div></div>
 
+--- 8-1. 광고 슬롯 D (참고자료 바로 위, 가로형 인피드 — 이 HTML을 그대로 복사, 절대 수정 금지) ---
+<div style="margin:32px 0;"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6858780475640766" data-ad-slot="5165217836" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script></div>
+
 --- 9. 참고자료 (이 HTML을 그대로 복사, URL·출처명 절대 수정 금지) ---
 <div style="margin-top:48px;padding:24px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;"><h4 style="margin:0 0 14px 0;color:#334155;font-size:16px;font-weight:700;">참고 자료</h4><ul style="list-style:none;padding:0;margin:0;font-size:14px;color:#334155;line-height:2.2;"><li><a href="{ref_url}" target="_blank" rel="noopener" style="color:{CAT_COLOR};text-decoration:none;">{ref_name}</a></li></ul></div>
 
@@ -1814,8 +1812,6 @@ GUIDELINE_APT_INFO = """
 섹션 구성
 - 1. 단지 개요 및 입지 분석 → 인포 박스로 기본 정보 정리 + 교통·학군·인프라 서술
 - 2. 분양가 & 시세 비교 → 표로 분양가와 주변 시세 비교, 줍줍 해당 시 신청 방법 포함
-- [광고 슬롯 B — 섹션 2 종료 후 섹션 3 시작 전, 아래 HTML을 그대로 삽입, 절대 수정 금지]
-<div style="margin:32px 0;"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-5r+d2+3d-69+9m" data-ad-client="ca-pub-6858780475640766" data-ad-slot="9373370867"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script></div>
 - 3. 단점·리스크와 투자 전망 → 주의사항 박스로 단점 명시 + 향후 가치 근거 중심 서술
 
 가독성 규칙
@@ -1850,8 +1846,6 @@ GUIDELINE_APT_NEWS = """
 섹션 구성
 - 1. 핵심 내용 요약 → 인포 박스로 핵심 팩트 정리
 - 2. 상세 분석 → 표 또는 비교 박스로 수치·조건·변경 전후 정리
-- [광고 슬롯 B — 섹션 2 종료 후 섹션 3 시작 전, 아래 HTML을 그대로 삽입, 절대 수정 금지]
-<div style="margin:32px 0;"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-5r+d2+3d-69+9m" data-ad-client="ca-pub-6858780475640766" data-ad-slot="9373370867"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script></div>
 - 3. 실수요자 대응 전략 → 글머리기호 박스로 행동 지침 간결하게
 
 가독성 규칙
@@ -1878,8 +1872,6 @@ GUIDELINE_APT_GUIDE = """
 섹션 구성
 - 1. 핵심 자격 및 전략 → 1~2줄 서술 + 글머리기호 박스 또는 비교 표
 - 2. 단계별 실전 가이드 → 스텝 박스로 절차·타임라인 시각화
-- [광고 슬롯 B — 섹션 2 종료 후 섹션 3 시작 전, 아래 HTML을 그대로 삽입, 절대 수정 금지]
-<div style="margin:32px 0;"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-5r+d2+3d-69+9m" data-ad-client="ca-pub-6858780475640766" data-ad-slot="9373370867"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script></div>
 - 3. 주의사항 및 자주 묻는 질문 → 주의사항 박스 + 인포 박스 조합
 
 가독성 규칙
@@ -2412,6 +2404,18 @@ def parse_and_publish(raw, category_id, label, urgent_policy_title=None):
                   lambda m: f'</{m.group(1).lower()}>', body)
     # 빈 <li> 항목 제거 (공백·&nbsp; 만 있는 경우)
     body = re.sub(r'<li[^>]*>\s*(&nbsp;)?\s*</li>', '', body)
+
+    # 본문 섹션 중간 광고(슬롯 B) 강제 삽입 — 프롬프트 지시만으로는 모델이 종종 누락하므로 코드에서 직접 삽입
+    if label in ("분양정보", "청약뉴스", "청약가이드") and "data-ad-slot=\"9373370867\"" not in body:
+        SECTION_MARKER = '<div style="margin-bottom:56px;padding-top:40px;border-top:1px solid #e2e8f0;">'
+        AD_SLOT_B = ('<div style="margin:32px 0;"><ins class="adsbygoogle" style="display:block" '
+                     'data-ad-format="fluid" data-ad-layout-key="-5r+d2+3d-69+9m" '
+                     'data-ad-client="ca-pub-6858780475640766" data-ad-slot="9373370867"></ins>'
+                     '<script>(adsbygoogle = window.adsbygoogle || []).push({});</script></div>')
+        parts = body.split(SECTION_MARKER)
+        if len(parts) >= 4:
+            # parts[0]=섹션1 이전, parts[1]=섹션1, parts[2]=섹션2, parts[3..]=섹션3~
+            body = SECTION_MARKER.join(parts[:3]) + AD_SLOT_B + SECTION_MARKER + SECTION_MARKER.join(parts[3:])
 
     print(f"제목: {title}")
     print(f"포커스 키워드: {focus_kw}")
