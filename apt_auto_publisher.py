@@ -152,8 +152,12 @@ def wp_find_post_by_slug(slug):
     return None
 
 def wp_update_post(post_id, title, content, excerpt):
-    """기존 포스트 내용 업데이트"""
-    payload = {"title": title, "content": content, "excerpt": excerpt}
+    """기존 포스트 내용 업데이트 (title/excerpt가 None이면 해당 필드 유지)"""
+    payload = {"content": content}
+    if title is not None:
+        payload["title"] = title
+    if excerpt is not None:
+        payload["excerpt"] = excerpt
     resp = requests.post(
         f"{APT_WP_SITE_URL}/wp-json/wp/v2/posts/{post_id}",
         headers=wp_auth_header(), json=payload, timeout=15,
@@ -163,6 +167,48 @@ def wp_update_post(post_id, title, content, excerpt):
         return None
     print(f"포스트 업데이트 완료! ID: {post_id}")
     return resp.json()
+
+def wp_get_recent_posts(category_id, per_page=20):
+    """카테고리 내 최근 포스트 목록 조회 (id, title, content, link)"""
+    resp = requests.get(
+        f"{APT_WP_SITE_URL}/wp-json/wp/v2/posts",
+        headers=wp_auth_header(),
+        params={"categories": category_id, "status": "publish,draft", "per_page": per_page, "orderby": "date", "order": "desc"},
+        timeout=15,
+    )
+    if resp.ok:
+        return resp.json()
+    print(f"포스트 목록 조회 실패: {resp.status_code}")
+    return []
+
+POLICY_NOTICE_MARKER = "policy-update-notice"
+
+def notify_related_guides_of_policy_change(policy_title, new_post_url):
+    """
+    청약가이드 카테고리의 기존 글에 정책 변경 안내 문구를 삽입.
+    이미 안내가 삽입된 글(마커 존재)은 건너뛰어 중복 삽입 방지.
+    """
+    posts = wp_get_recent_posts(CAT_ID["apt-guide"], per_page=30)
+    notice_html = (
+        f'<div id="{POLICY_NOTICE_MARKER}" style="background:#fff7ed;border-left:4px solid #f97316;'
+        f'border-radius:0 12px 12px 0;padding:16px 20px;margin:0 0 24px 0;">'
+        f'<p style="margin:0;font-size:14px;color:#9a3412;line-height:1.7;">'
+        f'🚨 <strong>정책 변경 안내</strong> — "{policy_title}" 관련 내용이 변경되어 본문 일부 정보가 최신과 다를 수 있습니다. '
+        f'<a href="{new_post_url}" style="color:#9a3412;font-weight:700;text-decoration:underline;">최신 가이드 보러가기</a></p></div>'
+    )
+    updated = 0
+    for post in posts:
+        content = post.get("content", {}).get("rendered", "")
+        if POLICY_NOTICE_MARKER in content:
+            continue
+        post_id = post.get("id")
+        new_content = notice_html + content
+        result = wp_update_post(post_id, None, new_content, None)
+        if result:
+            updated += 1
+    if updated:
+        print(f"정책 변경 안내 문구 삽입 완료: 기존 가이드 {updated}건")
+    return updated
 
 def wp_update_rank_math(post_id, focus_keyword, meta_description):
     payload = {"meta": {
@@ -2243,8 +2289,20 @@ def generate_guide_article(topic, source_type, source_data=""):
     source_data: 정책 보도자료 내용 또는 공고 특성 설명
     """
     source_block = ""
+    policy_change_instruction = ""
     if source_type == "policy" and source_data:
         source_block = f"\n[참고 정책 보도자료]\n{source_data}\n"
+        policy_change_instruction = """
+[필수 — 정책 변경 안내 섹션]
+본문 최상단(핵심 3가지 박스 다음, 본문 섹션 시작 전)에 "기존 대비 변경사항" 박스를 반드시 삽입:
+<div style="background:#fff7ed;border-left:4px solid #f97316;border-radius:0 12px 12px 0;padding:20px 24px;margin:24px 0;">
+  <p style="margin:0 0 12px 0;font-size:14px;font-weight:800;color:#9a3412;">🚨 기존 대비 변경사항</p>
+  <ul style="list-style:none;padding:0;margin:0;">
+    <li style="font-size:15px;color:#334155;line-height:1.8;margin-bottom:8px;">· <strong>변경 전</strong> [기존 기준/정책 — 원문에 없으면 "이전 기준" 처리]</li>
+    <li style="font-size:15px;color:#334155;line-height:1.8;">· <strong>변경 후</strong> [신규 기준/정책 — 보도자료 기준]</li>
+  </ul>
+</div>
+"""
     elif source_type == "announcement" and source_data:
         source_block = f"\n[연계 분양공고 특성]\n{source_data}\n"
 
@@ -2257,7 +2315,7 @@ def generate_guide_article(topic, source_type, source_data=""):
 {topic}
 
 [주제 선정 배경: {source_type}]{source_block}
-
+{policy_change_instruction}
 [작성 원칙]
 - 공신력 있는 기관(청약홈·국토교통부·주택도시기금) 기준으로 작성
 - 확인되지 않는 구체적 수치(소득 기준·LTV 한도 등)는 "청약홈 공고문 또는 은행 상담 참조"로 처리
@@ -2294,7 +2352,12 @@ def generate_guide_article(topic, source_type, source_data=""):
 # ==========================================
 # 공통 파싱 + 발행
 # ==========================================
-def parse_and_publish(raw, category_id, label):
+def parse_and_publish(raw, category_id, label, urgent_policy_title=None):
+    """
+    urgent_policy_title: 국토부 긴급 정책명이 전달되면 —
+      1) 텔레그램 알림에 긴급 표시 강조
+      2) 기존 청약가이드 글에 "정책 변경 안내" 문구 자동 삽입
+    """
     def extract(tag, default=""):
         m = re.search(rf'\[{tag}\](.*?)\[/{tag}\]', raw, re.DOTALL)
         return m.group(1).strip() if m else default
@@ -2368,12 +2431,25 @@ def parse_and_publish(raw, category_id, label):
     if post_id and focus_kw:
         wp_update_rank_math(post_id, focus_kw, meta_desc)
 
-    send_telegram(
-        f"<b>apt.bestwellth.org 자동 발행 완료</b>\n\n"
-        f"카테고리: {label}\n제목: {title}\n"
-        f"포커스 키워드: {focus_kw}\n슬러그: {slug}\n\n"
-        f"편집: {edit_url}"
-    )
+    if urgent_policy_title:
+        send_telegram(
+            f"🚨 <b>[긴급] 정책 변경 반영 — apt.bestwellth.org</b>\n\n"
+            f"정책: {urgent_policy_title}\n"
+            f"카테고리: {label}\n제목: {title}\n"
+            f"포커스 키워드: {focus_kw}\n슬러그: {slug}\n\n"
+            f"※ 이 글은 기존 가이드 내용을 대체·수정하는 정책 변경 안내입니다. "
+            f"관련 기존 청약가이드 글에도 안내 문구가 자동 삽입됩니다.\n\n"
+            f"편집: {edit_url}"
+        )
+        post_link = result.get("link") or edit_url
+        notify_related_guides_of_policy_change(urgent_policy_title, post_link)
+    else:
+        send_telegram(
+            f"<b>apt.bestwellth.org 자동 발행 완료</b>\n\n"
+            f"카테고리: {label}\n제목: {title}\n"
+            f"포커스 키워드: {focus_kw}\n슬러그: {slug}\n\n"
+            f"편집: {edit_url}"
+        )
     return title
 
 # ==========================================
@@ -2453,7 +2529,7 @@ def run():
             guide_source_data = f"제목: {policy['title']}\nURL: {policy['url']}\n내용: {policy['summary']}"
             if not is_duplicate(history, "apt-guide", guide_topic, days=60):
                 raw = generate_guide_article(guide_topic, "policy", guide_source_data)
-                title = parse_and_publish(raw, CAT_ID["apt-guide"], "청약가이드")
+                title = parse_and_publish(raw, CAT_ID["apt-guide"], "청약가이드", urgent_policy_title=policy['title'])
                 record_history(history, "apt-guide", guide_topic, title)
                 history_updated = True
 
@@ -2599,7 +2675,8 @@ def run():
                 print(f"청약가이드 중복 스킵: {guide_topic}")
             else:
                 raw = generate_guide_article(guide_topic, guide_source_type, guide_source_data)
-                title = parse_and_publish(raw, CAT_ID["apt-guide"], "청약가이드")
+                urgent_title = policy['title'] if guide_source_type == "policy" else None
+                title = parse_and_publish(raw, CAT_ID["apt-guide"], "청약가이드", urgent_policy_title=urgent_title)
                 record_history(history, "apt-guide", guide_topic, title)
                 history_updated = True
 
