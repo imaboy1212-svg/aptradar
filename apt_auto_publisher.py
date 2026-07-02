@@ -2475,10 +2475,21 @@ def run():
         print("\n전체 발행 완료")
         return
 
+    # 가이드 로테이션 소진 여부 (30개 주제 모두 60일 이내 발행됨 → 긴급 정책 없으면 가이드 제외)
+    guide_topics_exhausted = all(
+        is_duplicate(history, "apt-guide", t, days=60) for t in GUIDE_ROTATION_TOPICS
+    )
+    guide_available = is_urgent_policy or not guide_topics_exhausted
+
     # 발행 순서 결정: 요일 기반 로테이션 (화=분양정보, 수=청약뉴스, 목=청약가이드, 반복)
     # weekday: 1=화, 2=수, 3=목, 4=금, 5=토, 6=일
     rotation_order = ["apt-info", "apt-news", "apt-guide"]
-    today_slot = rotation_order[(weekday - 1) % 3]  # 화(1)→0, 수(2)→1, 목(3)→2, 금(4)→0, ...
+    if not guide_available:
+        rotation_order = ["apt-info", "apt-news"]
+        today_slot = rotation_order[(weekday - 1) % 2]
+        print("가이드 로테이션 소진 (긴급 정책 없음) → 분양정보·청약뉴스만 순환")
+    else:
+        today_slot = rotation_order[(weekday - 1) % 3]  # 화(1)→0, 수(2)→1, 목(3)→2, 금(4)→0, ...
 
     # 오늘 슬롯이 이미 발행됐으면 다른 미발행 카테고리로 대체
     candidates = [today_slot] + [c for c in rotation_order if c != today_slot]
@@ -2581,9 +2592,7 @@ def run():
                     print(f"가이드 주제: 로테이션 → {guide_topic}")
                     break
             else:
-                guide_topic       = GUIDE_ROTATION_TOPICS[0]
-                guide_source_type = "rotation"
-                print("가이드 로테이션 소진 — 첫 번째 주제 재사용")
+                print("가이드 로테이션 소진 (60일 이내 30개 전부 발행됨) — 긴급 정책 없어 스킵")
 
         if guide_topic:
             if is_duplicate(history, "apt-guide", guide_topic, days=60):
