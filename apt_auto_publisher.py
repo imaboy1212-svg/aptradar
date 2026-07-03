@@ -32,6 +32,8 @@ PUBLIC_DATA_API_KEY_APT   = os.environ.get("PUBLIC_DATA_API_KEY_APT")
 PUBLIC_DATA_API_KEY_SCORE = os.environ.get("PUBLIC_DATA_API_KEY_SCORE")
 TELEGRAM_BOT_TOKEN  = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID    = os.environ.get("TELEGRAM_CHAT_ID")
+# SNS 공유 시 og:image 빈 썸네일 방지용 — WP 미디어 라이브러리에 업로드된 브랜드 기본 이미지의 ID (선택)
+APT_DEFAULT_FEATURED_MEDIA_ID = os.environ.get("APT_DEFAULT_FEATURED_MEDIA_ID")
 
 for key, val in [
     ("ANTHROPIC_API_KEY", ANTHROPIC_API_KEY),
@@ -128,6 +130,8 @@ def wp_create_draft(title, content, excerpt, category_id, slug):
     }
     if category_id:
         payload["categories"] = [category_id]
+    if APT_DEFAULT_FEATURED_MEDIA_ID:
+        payload["featured_media"] = int(APT_DEFAULT_FEATURED_MEDIA_ID)
     resp = requests.post(
         f"{APT_WP_SITE_URL}/wp-json/wp/v2/posts",
         headers=wp_auth_header(), json=payload, timeout=15,
