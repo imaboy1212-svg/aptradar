@@ -664,7 +664,8 @@ def generate_weekly_schedule_article():
 [이번 주 청약홈(한국부동산원) 일정]
 {ah_block}
 
-[LH 선착순(수의)계약 현황 — 미분양 물량 선착순 계약 가능]
+[이번 주 LH 선착순 계약 가능 단지]
+15개 단지 중 지역별 주요 9개 단지 선착순 계약 현황 ({today.strftime('%Y년 %m월 %d일')} 기준)
 {lh_block}
 
 [제목 작성 기준 — 반드시 준수]
