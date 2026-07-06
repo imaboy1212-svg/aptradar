@@ -665,7 +665,7 @@ def generate_weekly_schedule_article():
 {ah_block}
 
 [이번 주 LH 선착순 계약 가능 단지]
-15개 단지 중 지역별 주요 9개 단지 선착순 계약 현황 ({today.strftime('%Y년 %m월 %d일')} 기준)
+{len(lh_items)}개 단지 중 지역별 주요 {len(set(item['region'] for item in lh_items))}개 지역 선착순 계약 현황 ({today.strftime('%Y년 %m월 %d일')} 기준)
 {lh_block}
 
 [제목 작성 기준 — 반드시 준수]
