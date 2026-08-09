@@ -1114,16 +1114,21 @@ def fetch_apt_announcements():
     """
     INVALID_NAMES = {"APT 잔여세대", "잔여세대", "APT", "아파트", ""}
 
-    METRO_REGIONS = {"서울", "경기", "인천"}
-    def _metro_first(a):
-        is_metro = any(r in (a.get("region") or "") for r in METRO_REGIONS)
-        return (0 if is_metro else 1)
+    def _region_order(a):
+        """지역별 정렬: 서울 > 경기도 > 지방"""
+        region = a.get("region") or ""
+        if "서울" in region:
+            return 0
+        elif "경기" in region:
+            return 1
+        else:
+            return 2
 
     # ── 1순위: 청약홈 분양정보 목록 (현재 분양 중인 단지 전체) ──
     listings = fetch_applyhome_pblanc_list()
     if listings:
-        listings = sorted(listings, key=_metro_first)
-        print(f"청약홈 분양정보 {len(listings)}건 사용 (수도권 우선)")
+        listings = sorted(listings, key=_region_order)
+        print(f"청약홈 분양정보 {len(listings)}건 사용 (서울→경기→지방 순서)")
         return listings
     print("청약홈 분양정보 목록 실패 → 다음 소스로")
 
@@ -1201,10 +1206,17 @@ def fetch_apt_announcements():
     except Exception as e:
         print(f"odcloud 청약홈 API 호출 실패: {e}")
 
-    METRO_REGIONS = {"서울", "경기", "인천"}
     def sort_key(a):
-        is_metro = any(r in (a.get("region") or "") for r in METRO_REGIONS)
-        return (0 if is_metro else 1, -(len(a.get("rcrit_pblanc_de", "") or "")))
+        """지역별 정렬: 서울 > 경기도 > 지방, 그 후 접수 마감일 역순"""
+        region = a.get("region") or ""
+        if "서울" in region:
+            region_order = 0
+        elif "경기" in region:
+            region_order = 1
+        else:
+            region_order = 2
+        rcrit_date = -(len(a.get("rcrit_pblanc_de", "") or ""))  # 접수 마감일 역순
+        return (region_order, rcrit_date)
     combined = sorted(remndr + announcements, key=sort_key)
     if combined:
         print(f"전체 공고 {len(combined)}건")
